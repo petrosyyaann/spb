@@ -1,0 +1,64 @@
+services:
+  restapi:
+    image: base-backend
+    build: .
+    restart: always
+    depends_on:
+      - db
+      - clickhouse
+    env_file:
+      - .env
+    ports:
+      - "8080:8000"
+    entrypoint: ["python3", "main.py"]
+    networks:
+      - spb
+  
+  
+  db:
+    image: postgres:17.0
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - spb
+  
+  grafana:
+    image: grafana/grafana
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - spb
+  
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.9
+    ports:
+      - "8123:8123"
+      - "8443:8443"
+      - "9000:9000"
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - clickhouse-logs:/var/log/clickhouse-server
+      - ./clickhouse_data/users.xml:/etc/clickhouse-server/users.d/users.xml
+    networks:
+      - spb
+
+networks:
+  spb:
+    external: true
+
+volumes:
+  clickhouse-data:
+    external: true
+  clickhouse-logs:
+    external: true
+  grafana_data:
