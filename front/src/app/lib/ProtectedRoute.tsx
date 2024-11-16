@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ContainerApp } from 'shared/ui'
 import Loading from 'pages/loading'
 import { refreshWithoutRepeats } from 'shared/api/axios'
 
@@ -17,24 +16,24 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       const token = localStorage.getItem('refresh')
 
       if (!token) {
-        navigate('/') 
+        navigate('/')
         return setIsLoaded(true)
       }
 
       try {
-        await refreshWithoutRepeats() 
+        await refreshWithoutRepeats()
       } catch {
         localStorage.removeItem('refresh')
-        navigate('/') 
+        navigate('/')
       } finally {
-        setIsLoaded(true) 
+        setIsLoaded(true)
       }
     }
 
     checkAuth()
-  }, [navigate])
+  }, [])
 
   if (!isLoaded) return <Loading />
 
-  return <ContainerApp>{children}</ContainerApp>
+  return children
 }
