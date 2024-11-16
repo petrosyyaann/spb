@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
     AWS_BUCKET: str
-    AWS_REGION: str
+    AWS_REGION: str = "us-east-1"
 
     JWT_SECRET: str
     JWT_ACCESS_EXPIRE: int
