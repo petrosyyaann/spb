@@ -5,8 +5,9 @@ import logging
 
 
 def create_tables():
-    client = clickhouse_session()
+    client = None
     try:
+        client = clickhouse_session()
         # Create database
         client.query(f"CREATE DATABASE IF NOT EXISTS {settings.CLICKHOUSE_DB_NAME}")
         # Switch to the specified database
@@ -54,6 +55,8 @@ def create_tables():
 
     except Exception as e:
         logging.error(f"Error creating tables: {e}")
-        logging.error(format_exc())
+        # logging.error(format_exc())
+        raise e
     finally:
-        client.close()
+        if client is not None:
+            client.close()

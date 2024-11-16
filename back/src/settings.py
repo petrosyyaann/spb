@@ -32,5 +32,9 @@ class Settings(BaseSettings):
 
     MINIMAL_PASSWORD_LENGTH: int = 4
 
+    RABBITMQ_HOST: str = 'localhost'
+    RABBITMQ_USER: str
+    RABBITMQ_PASS: str
+    RABBITMQ_PORT: int = 5672
 
 settings = Settings()

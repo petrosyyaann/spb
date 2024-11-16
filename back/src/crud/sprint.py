@@ -7,8 +7,10 @@ from models.sprint import Sprint
 
 
 def get_sprint_by_id(sprint_id: int,
-                     db: Session):
-    pass
+                     db: Session) -> Sprint | None:
+    stmt = select(Sprint).where(Sprint.id == sprint_id)
+    res = db.execute(stmt)
+    return res.scalar_one_or_none()
 
 
 def get_all_sprints(from_date: datetime,

@@ -6,13 +6,16 @@ from settings import settings
 from routers import router
 from core.db import create_tables as create_postgres_tables
 from core.clickhouse import create_tables as create_clickhouse_tables
-
+from core.rabbitmq import rabbit_connection
+import logging
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     create_clickhouse_tables()
     create_postgres_tables()
+    await rabbit_connection.connect()
     yield
+    await rabbit_connection.close()
 
 app = FastAPI(debug=settings.SERVER_TEST,
               lifespan=lifespan)
@@ -25,11 +28,19 @@ app.add_middleware(
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host=settings.SERVER_ADDR,
-        workers=settings.SERVER_WORKERS,
-        port=settings.SERVER_PORT,
-        reload=settings.SERVER_TEST,
-        log_level="debug" if settings.SERVER_TEST else "info",
-    )
+    if not settings.SERVER_TEST:
+        uvicorn.run(
+            app,
+            host=settings.SERVER_ADDR,
+            port=settings.SERVER_PORT,
+            log_level="info",
+        )
+    else:
+        uvicorn.run(
+            app,
+            host=settings.SERVER_ADDR,
+            workers=settings.SERVER_WORKERS,
+            port=settings.SERVER_PORT,
+            reload=True,
+            log_level="debug",
+        )
