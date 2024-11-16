@@ -54,3 +54,8 @@ def password_too_weak():
 def auth_data_is_not_unique():
     return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                          detail="Auth data not unique!")
+
+
+def not_enough_data_for_processing():
+    return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                         detail="Not enough data for processing!")

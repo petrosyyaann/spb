@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     CLICKHOUSE_PASSWORD: str
     CLICKHOUSE_DB_NAME: str
 
+    AWS_HOST: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_BUCKET: str
+    AWS_REGION: str
+
     JWT_SECRET: str
     JWT_ACCESS_EXPIRE: int
     JWT_REFRESH_EXPIRE: int
