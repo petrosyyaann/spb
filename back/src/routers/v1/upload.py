@@ -21,7 +21,7 @@ async def upload_workflow_data(files: List[UploadFile]):
 
     s3_paths = []
     for file in files:
-        s3_connection.upload_file(file.file.read(), "attachments/" + file.filename)
         s3_paths.append(f"import/{uuid4()}_{file.filename}")
+        s3_connection.upload_file(file.file.read(), s3_paths[-1])
 
     # TODO send s3_paths to preprocessing
