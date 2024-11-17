@@ -1,0 +1,12 @@
+services:
+  analytics:
+    image: analytics
+    build: .
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - spb
+networks:
+  spb:
+    external: true
