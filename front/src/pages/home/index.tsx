@@ -26,6 +26,7 @@ const HomePage = () => {
     processed_estimation_points,
     done_estimation_points,
     removed_estimation_points,
+    recommendations,
   } = useGetSprints()
   const { selectedSprints } = useFiltresStore()
 
@@ -98,7 +99,7 @@ const HomePage = () => {
           padding="10px 20px 10px 20px"
         >
           <Text fontSize="18px" color="#373645" fontWeight={700}>
-            Здоровье
+            Сумма оценок на каждом этапе спринта
           </Text>
           <Flex h={selectedSprints.length === 1 ? '30vh' : '35vh'} gap="10px">
             <Flex w="100%">
@@ -128,20 +129,18 @@ const HomePage = () => {
           >
             Оценка Ч/Д
           </Text>
-          {selectedSprints.length === 1 && (
+          {selectedSprints.length === 1 && recommendations && (
             <Flex direction="column" mt="10px">
-              <ColorDotListItem
-                label={
-                  'Снято - не должно составлять более 10% от общего объема'
-                }
-                color={'#61C6FF'}
-              />
-              <ColorDotListItem
-                label={
-                  'К выполнению - не должно составлять более 20% от общего объема'
-                }
-                color={'#8AF179'}
-              />
+              {recommendations.map((recommendation) => (
+                <ColorDotListItem
+                  label={`${recommendation.text}`}
+                  color={
+                    recommendation.type === 'предупреждение'
+                      ? '#61C6FF'
+                      : '#F179C1'
+                  }
+                />
+              ))}
             </Flex>
           )}
         </Flex>

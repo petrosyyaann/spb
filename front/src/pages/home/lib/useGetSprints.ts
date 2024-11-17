@@ -162,12 +162,18 @@ export const useGetSprints = () => {
       },
     ],
   }
+
+  const recommendations = result && result[0].recommendations
+
   const dataTable = result ? transformDataToDataRow(result) : ([] as DataRow[])
   const dataTooltip = result
     ? transformDataToTooltip(result)
     : ([] as DataRow[])
+  console.log(result)
+  console.log(recommendations)
 
   return {
+    recommendations,
     data,
     dataHistogarm,
     dataBacklog,
