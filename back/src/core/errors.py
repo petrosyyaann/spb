@@ -59,3 +59,8 @@ def auth_data_is_not_unique():
 def not_enough_data_for_processing():
     return HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                          detail="Not enough data for processing!")
+
+
+def sprint_not_found():
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                         detail="Sprint not found")
