@@ -4,6 +4,7 @@ import StackedBarChart from 'shared/ui/histogram'
 import { SprintTableCard } from 'widgets/SprintTableCard'
 import { useGetSprints } from './lib/useGetSprints'
 import { useFiltresStore } from 'entities/filters/modal'
+import { SprintHealthWidget } from 'widgets/SprintHealthWidget'
 
 const HomePage = () => {
   const items = [
@@ -19,7 +20,12 @@ const HomePage = () => {
     dataBacklog,
     dataBlockedSum,
     dataBlockedPersent,
-    dataTable
+    dataTable,
+    dataTooltip,
+    to_do_estimation_points,
+    processed_estimation_points,
+    done_estimation_points,
+    removed_estimation_points,
   } = useGetSprints()
   const { selectedSprints } = useFiltresStore()
 
@@ -35,29 +41,28 @@ const HomePage = () => {
       <Flex
         w="100%"
         bg="white"
-        direction="column"
         justify="center"
         borderRadius="20px"
         mb="20px"
         padding="10px 20px 10px 20px"
-        h="15vh"
+        h="19vh"
         gap="15px"
-        justifyContent="center"
-        alignItems="flex-start"
+        justifyContent="space-between"
       >
-        <Text fontSize="18px" color="#373645" fontWeight={700}>
-          Выберите параметры
-        </Text>
-        <Flex
-          w="100%"
-          direction="row"
-          justify="center"
-          justifyContent="flex-start"
-          alignItems="center"
-          gap="20px"
-        >
-          <MultiSelect options={data} placeholder="Спринты" type={'multi'} />
-          {/* <MultiSelect
+        <Flex direction="column" alignItems="flex-start">
+          <Text fontSize="18px" color="#373645" fontWeight={700}>
+            Выберите параметры
+          </Text>
+          <Flex
+            w="100%"
+            direction="row"
+            justify="center"
+            justifyContent="flex-start"
+            alignItems="center"
+            gap="20px"
+          >
+            <MultiSelect options={data} placeholder="Спринты" type={'multi'} />
+            {/* <MultiSelect
             options={[
               { label: 'Asisiti', value: 'Asisiti' },
               { label: 'SpchX', value: 'SpchX' },
@@ -65,8 +70,23 @@ const HomePage = () => {
             placeholder="Команда спринта"
             type={'multi'}
           /> */}
-          <MultiSelect placeholder="Дни спринта для анализа" type={'range'} />
+            <MultiSelect placeholder="Дни спринта для анализа" type={'range'} />
+          </Flex>
         </Flex>
+        {selectedSprints.length === 1 &&
+          to_do_estimation_points &&
+          processed_estimation_points &&
+          done_estimation_points &&
+          removed_estimation_points && (
+            <SprintHealthWidget
+              to_do_estimation_point={to_do_estimation_points[0]}
+              processed_estimation_point={processed_estimation_points[0]}
+              done_estimation_point={done_estimation_points[0]}
+              removed_estimation_point={removed_estimation_points[0]}
+              dataBlockedPersent={dataBlockedPersent}
+              dataBacklog={dataBacklog}
+            />
+          )}
       </Flex>
       <Flex h="45vh" gap="20px">
         <Flex
@@ -136,7 +156,7 @@ const HomePage = () => {
       </Flex>
       <Flex direction="row" mt="20px" w="100%" gap="20px">
         <Flex>
-          <SprintTableCard dataTable={dataTable} />
+          <SprintTableCard dataTooltip={dataTooltip} dataTable={dataTable} />
         </Flex>
         <Flex w="100%">
           <Card
