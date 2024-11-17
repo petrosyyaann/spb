@@ -5,7 +5,6 @@ services:
     restart: always
     depends_on:
       - db
-      - clickhouse
     env_file:
       - .env
     ports:
@@ -13,8 +12,7 @@ services:
     entrypoint: ["python3", "main.py"]
     networks:
       - spb
-  
-  
+
   db:
     image: postgres:17.0
     restart: always
@@ -23,10 +21,10 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - spb
-  
+
   grafana:
     image: grafana/grafana
     env_file:
@@ -38,17 +36,44 @@ services:
       - "3000:3000"
     networks:
       - spb
-  
-  clickhouse:
-    image: clickhouse/clickhouse-server:24.9
-    ports:
-      - "8123:8123"
-      - "8443:8443"
-      - "9000:9000"
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    restart: always
+    environment:
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     volumes:
-      - clickhouse-data:/var/lib/clickhouse
-      - clickhouse-logs:/var/log/clickhouse-server
-      - ./clickhouse_data/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q status && rabbitmq-diagnostics -q check_local_alarms
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    networks:
+      -  spb
+
+  minio:
+    image: minio/minio
+    command: server --console-address :9005 /data
+    ports:
+      - '9090:9000'
+      - '9005:9005'
+    environment:
+      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
+      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
+    restart: always
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 1s
+      timeout: 1s
+      retries: 30
     networks:
       - spb
 
@@ -57,8 +82,10 @@ networks:
     external: true
 
 volumes:
+  minio_data:
+    driver: local
   clickhouse-data:
-    external: true
   clickhouse-logs:
-    external: true
+  rabbitmq_data:
+  postgres_data:
   grafana_data:

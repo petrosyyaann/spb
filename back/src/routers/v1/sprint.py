@@ -77,12 +77,24 @@ async def compare_sprint_to_all(sprint_id: int,
     if sprint is None:
         raise errors.sprint_not_found()
     sprint_analysis = get_sprint_compare_to_all(sprint.id, db)
+    avg_compare = (sprint_analysis.to_do_estimation + sprint_analysis.done_estimation +
+                   sprint_analysis.processed_estimation + sprint_analysis.removed_estimation +
+                   sprint_analysis.blocked_tasks + sprint_analysis.created_tasks +
+                   sprint_analysis.excluded_tasks) / 7
     return SprintCompareResult(sprint_id=sprint.id,
-                               to_do_estimation_points=sprint_analysis.to_do_estimation,
-                               done_estimation_points=sprint_analysis.done_estimation,
-                               processed_estimation_points=sprint_analysis.processed_estimation,
-                               removed_estimation_points=sprint_analysis.removed_estimation,
-                               blocked_tasks_points=sprint_analysis.blocked_tasks,
-                               created_tasks_points=sprint_analysis.created_tasks,
-                               excluded_tasks_points=sprint_analysis.excluded_tasks)
+                               to_do_estimation_top=sprint_analysis.to_do_estimation,
+                               done_estimation_top=sprint_analysis.done_estimation,
+                               processed_estimation_top=sprint_analysis.processed_estimation,
+                               removed_estimation_top=sprint_analysis.removed_estimation,
+                               blocked_tasks_top=sprint_analysis.blocked_tasks,
+                               created_tasks_top=sprint_analysis.created_tasks,
+                               excluded_tasks_top=sprint_analysis.excluded_tasks,
+                               to_do_estimation_points=sprint.to_do_estimation,
+                               done_estimation_points=sprint.done_estimation,
+                               processed_estimation_points=sprint.processed_estimation,
+                               removed_estimation_points=sprint.removed_estimation,
+                               blocked_tasks_points=sprint.blocked_tasks,
+                               created_tasks_points=sprint.created_tasks,
+                               excluded_tasks_points=sprint.excluded_tasks,
+                               result=avg_compare)
 

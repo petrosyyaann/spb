@@ -40,6 +40,14 @@ class SprintResult(BaseModel):
 
 class SprintCompareResult(BaseModel):
     sprint_id: int
+    to_do_estimation_top: float
+    done_estimation_top: float
+    processed_estimation_top: float
+    removed_estimation_top: float
+    blocked_tasks_top: float
+    created_tasks_top: float
+    excluded_tasks_top: float
+
     to_do_estimation_points: float
     done_estimation_points: float
     processed_estimation_points: float
@@ -47,3 +55,5 @@ class SprintCompareResult(BaseModel):
     blocked_tasks_points: float
     created_tasks_points: float
     excluded_tasks_points: float
+
+    result: float

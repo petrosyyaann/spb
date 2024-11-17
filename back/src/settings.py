@@ -13,12 +13,6 @@ class Settings(BaseSettings):
     DB_ADDR: str = "db"
     DB_PORT: int = 5432
 
-    CLICKHOUSE_ADDR: str = "clickhouse"
-    CLICKHOUSE_PORT: int = 8123
-    CLICKHOUSE_USERNAME: str
-    CLICKHOUSE_PASSWORD: str
-    CLICKHOUSE_DB_NAME: str
-
     AWS_HOST: str
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str

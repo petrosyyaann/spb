@@ -5,13 +5,10 @@ from fastapi import FastAPI
 from settings import settings
 from routers import router
 from core.db import create_tables as create_postgres_tables
-from core.clickhouse import create_tables as create_clickhouse_tables
 from core.rabbitmq import rabbit_connection
-import logging
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
-    create_clickhouse_tables()
     create_postgres_tables()
     await rabbit_connection.connect()
     yield
